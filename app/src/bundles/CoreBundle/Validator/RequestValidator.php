@@ -50,7 +50,7 @@ class RequestValidator implements RequestValidatorInterface
         // TODO ezt majd ki kell innen vinni, a webpage validáció miatt
         if (!$form->isSubmitted() || !$form->isValid()) {
             $message = '';
-            foreach ($form->getErrors() as $e) {
+            foreach ($form->getErrors(true) as $e) {
                 $message .= sprintf(' %s %s', $e->getMessage(), implode('', $e->getMessageParameters()));
             }
             throw new FormValidationException($message);

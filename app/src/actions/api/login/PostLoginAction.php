@@ -2,7 +2,7 @@
 
 namespace app\actions\api\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractApiActionHandler;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
 use app\bundles\LoginBundle\Form\LoginForm;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,13 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\api\login
  */
-class PostLoginAction extends AbstractActionHandler
+class PostLoginAction extends AbstractApiActionHandler
 {
     /**
      * @inheritDoc
      */
     protected function getAllowedRoles()
-    {}
+    {
+    }
 
     /**
      * @inheritDoc
@@ -39,22 +40,10 @@ class PostLoginAction extends AbstractActionHandler
 
         $this->loginHandler->handle($descriptor);
 
+        // TODO külön responder kell
         return $this->responder->createJsonResponse(
             [
                 'succeeded' => $descriptor->isSuceeded(),
-            ]
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function handleError(\Exception $e, Request $request): Response
-    {
-        return $this->responder->createJsonResponse(
-            [
-                'errorClass'   => \get_class($e),
-                'errorMessage' => $e->getMessage(),
             ]
         );
     }

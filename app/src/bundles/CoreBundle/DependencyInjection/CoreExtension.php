@@ -11,12 +11,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * Class CoreExtension
  * @package app\bundles\CoreBundle\DependencyInjection
  */
-class CoreExtension extends Extension {
+class CoreExtension extends Extension
+{
 
     /**
      * @inheritdoc
      */
-    public function load(array $configs, ContainerBuilder $container): void {
+    public function load(array $configs, ContainerBuilder $container): void
+    {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

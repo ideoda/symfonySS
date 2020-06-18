@@ -2,9 +2,8 @@
 
 namespace app\actions\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractWebActionHandler;
 use app\bundles\LoginBundle\Form\LoginForm;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,20 +11,20 @@ use Symfony\Component\HttpFoundation\Response;
  * Class LoginAction
  * @package app\actions\api\login
  */
-class LoginAction extends AbstractActionHandler
+class LoginAction extends AbstractWebActionHandler
 {
     /**
      * @inheritDoc
      */
     protected function getAllowedRoles()
-    {}
+    {
+    }
 
     /**
      * @inheritDoc
      */
     protected function validate(Request $request): void
     {
-
     }
 
     /**
@@ -39,13 +38,5 @@ class LoginAction extends AbstractActionHandler
             '@Login/login.form.html.twig',
             ['form' => $form->createView()]
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function handleError(\Exception $e, Request $request): Response
-    {
-        return new JsonResponse(['error' => 'error']);
     }
 }

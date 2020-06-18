@@ -71,5 +71,4 @@ class LoginDescriptor
         $this->suceeded = $suceeded;
     }
 
-
 }

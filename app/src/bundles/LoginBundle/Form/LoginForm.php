@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class LoginForm
@@ -25,14 +27,21 @@ class LoginForm extends AbstractType
             'email',
             EmailType::class,
             [
-                'required' => true,
+                'required'    => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'notblank'/*TODO*/]),
+                    new Email(['message' => 'emailnotvalid'/*TODO*/]),
+                ],
             ]
         );
         $builder->add(
             'password',
             PasswordType::class,
             [
-                'required' => true,
+                'required'    => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'notblank'/*TODO*/]),
+                ],
             ]
         );
         $builder->add(

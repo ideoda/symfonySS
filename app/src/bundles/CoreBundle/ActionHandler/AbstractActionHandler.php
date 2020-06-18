@@ -56,7 +56,7 @@ abstract class AbstractActionHandler extends AbstractController
         try {
 
             if ($this->getAllowedRoles()) {
-                $this->checkPermissions($request, $this->getAllowedRoles());
+                $this->checkPermissions($this->getAllowedRoles());
             }
 
             $this->validate($request);
@@ -71,11 +71,10 @@ abstract class AbstractActionHandler extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param array   $roleNames
+     * @param array $roleNames
      * @return void
      */
-    protected function checkPermissions(Request $request, array $roleNames): void
+    protected function checkPermissions(array $roleNames): void
     {
         // TODO talán egy másik service lesz ez? permissionchecker service?
         if (empty($roleNames)) {
