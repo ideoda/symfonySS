@@ -1,0 +1,7 @@
+#login:
+#    resource: ../src/LoginBundle/Resources/config/routes.yml
+#    prefix: /
+
+coreRouteLoader:
+    resource: app\bundles\CoreBundle\RouteLoader\CoreRouteLoader
+    type: coreRouteLoader

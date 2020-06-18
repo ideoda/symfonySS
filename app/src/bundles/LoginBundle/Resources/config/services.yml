@@ -1,0 +1,5 @@
+services:
+    App\LoginBundle\Action\GetLoginAction:
+        public: true
+        autowire: true
+        tags: ['controller.service_arguments']
