@@ -24,9 +24,9 @@ class PostLoginAction extends AbstractApiActionHandler
     /**
      * @inheritDoc
      */
-    protected function validate(Request $request): void
+    protected function validateRequest(Request $request): void
     {
-        $this->requestValidator->validateForm($request, LoginForm::class);
+        $this->requestValidator->validateForm(LoginForm::class);
     }
 
     /**

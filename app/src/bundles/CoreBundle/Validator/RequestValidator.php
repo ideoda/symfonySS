@@ -4,9 +4,11 @@ namespace app\bundles\CoreBundle\Validator;
 
 use app\bundles\CoreBundle\Exception\FormValidationException;
 use app\bundles\CoreBundle\Exception\RequestValidationException;
+use app\bundles\CoreBundle\Exception\RequestValidatorException;
 use app\bundles\CoreBundle\Interfaces\RequestValidatorInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class RequestValidator
@@ -20,21 +22,30 @@ class RequestValidator implements RequestValidatorInterface
     protected FormFactoryInterface $formFactory;
 
     /**
+     * @var RequestStack
+     */
+    protected RequestStack $requestStack;
+
+    /**
      * RequestValidator constructor.
      * @param FormFactoryInterface $formFactory
+     * @param RequestStack         $requestStack
      */
-    public function __construct(FormFactoryInterface $formFactory
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        RequestStack $requestStack
     ) {
-        $this->formFactory = $formFactory;
+        $this->formFactory  = $formFactory;
+        $this->requestStack = $requestStack;
     }
 
     /**
-     * @param Request $request
-     * @param string  $formClass
+     * @param string $formClass
      */
-    public function validateForm(Request $request, string $formClass): void
+    public function validateForm(string $formClass): void
     {
-        $form = $this->formFactory->create($formClass);
+        $form    = $this->formFactory->create($formClass);
+        $request = $this->getCurrentRequest();
 
         switch ($request->headers->get('content-type')) {
             case 'application/x-www-form-urlencoded':
@@ -44,16 +55,23 @@ class RequestValidator implements RequestValidatorInterface
                 $form->submit($request->request->all());
                 break;
             default:
-                throw new RequestValidationException('Content-type header not allowed');
+                throw new RequestValidationException('content.type.header.not.allowed');
         }
 
-        // TODO ezt majd ki kell innen vinni, a webpage validáció miatt
         if (!$form->isSubmitted() || !$form->isValid()) {
-            $message = '';
-            foreach ($form->getErrors(true) as $e) {
-                $message .= sprintf(' %s %s', $e->getMessage(), implode('', $e->getMessageParameters()));
-            }
-            throw new FormValidationException($message);
+            throw new FormValidationException($form->getErrors(true));
         }
+    }
+
+    /**
+     * @throws RequestValidatorException
+     */
+    private function getCurrentRequest(): Request
+    {
+        if (($request = $this->requestStack->getCurrentRequest()) === null) {
+            throw new RequestValidatorException('request.not.present');
+        }
+
+        return $request;
     }
 }

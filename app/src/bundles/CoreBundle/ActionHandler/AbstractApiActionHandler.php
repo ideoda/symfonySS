@@ -24,21 +24,4 @@ abstract class AbstractApiActionHandler extends AbstractActionHandler
         );
     }
 
-    /**
-     * @inheritDoc
-     */
-    abstract protected function getAllowedRoles();
-
-    /**
-     * @inheritDoc
-     */
-    abstract protected function validate(Request $request): void;
-
-    /**
-     * @inheritDoc
-     */
-    protected function handle(Request $request): Response
-    {
-        // TODO: Implement handle() method.
-    }
 }

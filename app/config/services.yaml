@@ -16,11 +16,11 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     app\bundles\:
         resource: '../src/bundles/*'
-        exclude: '../src/bundles/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/bundles/*/{Exception,DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
     app\actions\:
         resource: '../src/actions/*'
-        exclude: '../src/actions/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/actions/*/{Exception,DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class

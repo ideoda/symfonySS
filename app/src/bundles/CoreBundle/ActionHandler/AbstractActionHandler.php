@@ -2,7 +2,6 @@
 
 namespace app\bundles\CoreBundle\ActionHandler;
 
-use app\bundles\CoreBundle\Exception\RequestValidationException;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
 use app\bundles\LoginBundle\Handler\Login;
@@ -59,7 +58,7 @@ abstract class AbstractActionHandler extends AbstractController
                 $this->checkPermissions($this->getAllowedRoles());
             }
 
-            $this->validate($request);
+            $this->validateRequest($request);
 
             $response = $this->handle($request);
         }
@@ -90,10 +89,8 @@ abstract class AbstractActionHandler extends AbstractController
 
     /**
      * @param Request $request
-     * @return void
-     * @throws RequestValidationException
      */
-    abstract protected function validate(Request $request): void;
+    abstract protected function validateRequest(Request $request): void;
 
     /**
      * @param Request $request
