@@ -25,7 +25,7 @@ class ErrorDescriptor implements DescriptorInterface
     }
 
     /**
-     * @return mixed
+     * @return \Exception
      */
     public function getError(): \Exception
     {

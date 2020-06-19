@@ -13,10 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class LoginAction
- * @package app\actions\api\login
+ * Class PostLoginAction
+ * @package app\actions\login
  */
-class LoginAction extends AbstractWebActionHandler
+class PostLoginAction extends AbstractWebActionHandler
 {
     /**
      * @var LoginHandlerI
@@ -36,7 +36,9 @@ class LoginAction extends AbstractWebActionHandler
      */
     protected function validateRequest(Request $request): void
     {
-        $this->requestValidator->validateForm(LoginForm::class);
+        if ($request->getMethod() === 'POST') {
+            $this->requestValidator->validateForm(LoginForm::class);
+        }
     }
 
     /**
@@ -61,9 +63,7 @@ class LoginAction extends AbstractWebActionHandler
      */
     protected function handleError(\Exception $e): ErrorDescriptor
     {
-        //if ($e instanceof FormValidationException) {
-            return new ErrorDescriptor($e);
-        //}
+        return new ErrorDescriptor($e);
     }
 
     /**
@@ -78,7 +78,7 @@ class LoginAction extends AbstractWebActionHandler
                 return $this->responder->createTwigResponse(
                     '@Login/login.form.html.twig',
                     [
-                        'errors' => $e->getFormErrors(),
+                        'errors' => $e->getMessage(),
                     ]
                 );
             }
@@ -87,7 +87,7 @@ class LoginAction extends AbstractWebActionHandler
         }
 
         $data = [
-            'succeeded' => $descriptor->isSuceeded()
+            'succeeded' => $descriptor->isSuceeded(),
         ];
 
         return $this->responder->createJsonResponse($data);
