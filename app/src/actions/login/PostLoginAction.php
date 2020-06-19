@@ -1,8 +1,9 @@
 <?php
 
-namespace app\actions\api\login;
+namespace app\actions\login;
 
 use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\Exception\FormValidationException;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class PostLoginAction
- * @package app\actions\api\login
+ * @package app\actions\login
  */
 class PostLoginAction extends AbstractActionHandler
 {
@@ -58,25 +59,30 @@ class PostLoginAction extends AbstractActionHandler
     protected function handle(Request $request): Response
     {
         $descriptor = new LoginDescriptor();
-        $descriptor->setEmail($request->get('email'));
-        $descriptor->setPassword($request->get('password'));
+        $descriptor->setEmail($request->request->all()['login_form']['email']);
+        $descriptor->setPassword($request->request->all()['login_form']['password']);
 
         $this->loginHandler->handle($descriptor);
 
-        return $this->responder->createJsonResponse(
-            [
-                'succeeded' => $descriptor->isSuceeded(),
-            ]);
+        return $this->responder->createTwigResponse(
+            '@Login/login.form.success.html.twig',
+            []
+        );
     }
 
     /**
-     * @inheritDoc
+     * @param \Exception $e
+     * @return Response
      */
     protected function handleError(\Exception $e): Response
     {
-        return $this->responder->createJsonResponse(
-            [
-                'error' => $e->getMessage(),
-            ]);
+        if ($e instanceof FormValidationException) {
+            return $this->responder->createTwigResponse(
+                '@Login/login.form.html.twig',
+                [
+                    'errors' => $e->getFormErrors(),
+                ]
+            );
+        }
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
  * Class JsonDeserializeListener
  * @package app\bundles\CoreBundle\Listener
  */
-class JsonDeserializeListener
+class JsonRequestDeserializeListener
 {
     /**
      * @param RequestEvent $event

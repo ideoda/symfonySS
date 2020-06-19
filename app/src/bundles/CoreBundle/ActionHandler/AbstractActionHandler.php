@@ -4,7 +4,6 @@ namespace app\bundles\CoreBundle\ActionHandler;
 
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
-use app\bundles\LoginBundle\Handler\Login;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,11 +20,6 @@ abstract class AbstractActionHandler extends AbstractController
     protected RequestValidator $requestValidator;
 
     /**
-     * @var Login
-     */
-    protected Login $loginHandler;
-
-    /**
      * @var Responder
      */
     protected Responder $responder;
@@ -33,16 +27,13 @@ abstract class AbstractActionHandler extends AbstractController
     /**
      * PostLoginAction constructor.
      * @param RequestValidator $requestValidator
-     * @param Login            $loginHandler
      * @param Responder        $responder
      */
     public function __construct(
         RequestValidator $requestValidator,
-        Login $loginHandler,
         Responder $responder
     ) {
         $this->requestValidator = $requestValidator;
-        $this->loginHandler     = $loginHandler;
         $this->responder        = $responder;
     }
 
@@ -63,7 +54,7 @@ abstract class AbstractActionHandler extends AbstractController
             $response = $this->handle($request);
         }
         catch (\Exception $e) {
-            $response = $this->handleError($e, $request);
+            $response = $this->handleError($e);
         }
 
         return $response;
@@ -76,10 +67,10 @@ abstract class AbstractActionHandler extends AbstractController
     protected function checkPermissions(array $roleNames): void
     {
         // TODO talán egy másik service lesz ez? permissionchecker service?
+        // TODO user load, roles load, compare, throw exception
         if (empty($roleNames)) {
             return;
         }
-        //TODO user load, roles load, compare, throw exception
     }
 
     /**
@@ -100,8 +91,7 @@ abstract class AbstractActionHandler extends AbstractController
 
     /**
      * @param \Exception $e
-     * @param Request    $request
      * @return Response
      */
-    abstract protected function handleError(\Exception $e, Request $request): Response;
+    abstract protected function handleError(\Exception $e): Response;
 }

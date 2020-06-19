@@ -59,7 +59,7 @@ class RequestValidator implements RequestValidatorInterface
         }
 
         if (!$form->isSubmitted() || !$form->isValid()) {
-            throw new FormValidationException($form->getErrors(true));
+            throw new FormValidationException($form);
         }
     }
 
