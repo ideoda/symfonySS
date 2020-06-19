@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class GetLoginAction
  * @package app\actions\api\login
  */
-class GetLoginAction extends AbstractActionHandler
+class GetLogin extends AbstractActionHandler
 {
     /**
      * @inheritDoc
