@@ -2,7 +2,7 @@
 
 namespace app\actions\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractAction;
 use app\bundles\CoreBundle\Exception\FormValidationException;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\login
  */
-class PostLogin extends AbstractActionHandler
+class PostLogin extends AbstractAction
 {
     /**
      * @var LogiinHandler
@@ -68,8 +68,7 @@ class PostLogin extends AbstractActionHandler
     }
 
     /**
-     * @param \Exception $e
-     * @return Response
+     * @inheritDoc
      */
     protected function handleError(\Exception $e): Response
     {
@@ -77,9 +76,14 @@ class PostLogin extends AbstractActionHandler
             return $this->responder->createTwigResponse(
                 '@Login/login.form.html.twig',
                 [
-                    'form' => $e->getForm()->createView(),
+                    $e->getForm(),
                 ]
             );
         }
+
+        return $this->responder->createTwigErrorPageResponse(
+            '@Error/error.html.twig',
+            $e
+        );
     }
 }

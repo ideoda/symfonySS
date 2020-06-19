@@ -9,7 +9,7 @@ namespace app\bundles\CoreBundle\Interfaces;
 interface RequestValidatorInterface
 {
     /**
-     * @param string  $formClass
+     * @param string $formClass
      */
     public function validateForm(string $formClass): void;
 }

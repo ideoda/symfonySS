@@ -56,7 +56,6 @@ class CoreRouteLoader extends Loader
      */
     public function getResolver()
     {
-        // TODO: Implement getResolver() method.
     }
 
     /**
@@ -64,7 +63,6 @@ class CoreRouteLoader extends Loader
      */
     public function setResolver(LoaderResolverInterface $resolver)
     {
-        // TODO: Implement setResolver() method.
     }
 
     /**
@@ -87,16 +85,15 @@ class CoreRouteLoader extends Loader
      */
     protected function getPathFromFile(SplFileInfo $file): string
     {
-        // TODO ide majd még be kell a parameteres routingot is tenni pl users/32
-
         $pathname        = $file->getPathname();
         $folderStructure = preg_replace('/^.*actions\/(.*)\/.*.php$/', '$1', $pathname);
         $folderStructure = explode('/', $folderStructure);
-        $filenameString  = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch)(.*)\.php$/', '$2', $pathname);
 
-        // TODO GetLoginId legyen értelmes route
+        $filenameString = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch)(.*)\.php$/', '$2', $pathname);
+        $explodedFilename = explode(' ', preg_replace("([A-Z])", " $0", $filenameString));
+        unset($explodedFilename[0]);
 
-        if (strtolower(end($folderStructure)) === strtolower($filenameString)) {
+        if (strtolower(end($folderStructure)) === strtolower($explodedFilename[1])) {
             array_pop($folderStructure);
         }
 
@@ -104,9 +101,14 @@ class CoreRouteLoader extends Loader
         foreach ($folderStructure as $folder) {
             $path .= $folder.'/';
         }
-        $path .= strtolower($filenameString);
+        $path .= strtolower($explodedFilename[1]).'/';
+        unset($explodedFilename[1]);
 
-        return $path;
+        foreach ($explodedFilename as $s) {
+            $path .= '{'.strtolower($s).'}/';
+        }
+
+        return substr($path, 0, -1);
     }
 
     /**
@@ -115,9 +117,9 @@ class CoreRouteLoader extends Loader
      */
     protected function getControllerNameFromFile(SplFileInfo $file): string
     {
-        $string = str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
+        $stringReplacedRelativePath = str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
 
-        return 'app\\actions\\'.$string;
+        return 'app\\actions\\'.$stringReplacedRelativePath;
     }
 
     /**

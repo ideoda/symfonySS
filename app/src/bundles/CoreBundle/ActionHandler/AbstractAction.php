@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class AbstractActionHandler
+ * Class AbstractAction
  * @package app\bundles\CoreBundle\ActionHandler
  */
-abstract class AbstractActionHandler extends AbstractController
+abstract class AbstractAction extends AbstractController
 {
     /**
      * @var RequestValidator
@@ -44,7 +44,6 @@ abstract class AbstractActionHandler extends AbstractController
     public function __invoke(Request $request): Response
     {
         try {
-
             if ($this->getAllowedRoles()) {
                 $this->checkPermissions($this->getAllowedRoles());
             }

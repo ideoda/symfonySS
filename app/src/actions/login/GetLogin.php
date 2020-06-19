@@ -2,7 +2,7 @@
 
 namespace app\actions\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractAction;
 use app\bundles\LoginBundle\Form\LoginForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class GetLoginAction
  * @package app\actions\api\login
  */
-class GetLogin extends AbstractActionHandler
+class GetLogin extends AbstractAction
 {
     /**
      * @inheritDoc
@@ -36,13 +36,12 @@ class GetLogin extends AbstractActionHandler
 
         return $this->responder->createTwigResponse(
             '@Login/login.form.html.twig',
-            ['form' => $form->createView()]
+            [$form]
         );
     }
 
     /**
-     * @param \Exception $e
-     * @return Response
+     * @inheritDoc
      */
     protected function handleError(\Exception $e): Response
     {

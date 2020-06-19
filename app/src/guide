@@ -1,0 +1,15 @@
+
+
+folders and action class format:
+/folder1/folder2/MethodActionParam1Param2
+if "folder2" is the same as "Action" (case insensitive), "folder2" removed
+
+
+routing generation examples:
+(path => method + routing)
+/login/PostLogin => POST + /login
+/api/login/GetLoginId => GET + /api/login/{id}
+/api/login/GetLogoutId => GET + /api/login/logout/{id}
+/api/login/GetLogTwoThree => GET + /api/login/log/{two}/{three}
+/api/login/GetLoginVarTwoThree => GET + /api/login/{var}/{two}/{three}
+/api/GetLogoutId => GET + /api/logout/{id}
