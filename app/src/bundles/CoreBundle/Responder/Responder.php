@@ -4,6 +4,7 @@ namespace app\bundles\CoreBundle\Responder;
 
 use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
 use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -37,6 +38,13 @@ class Responder
     public function createTwigResponse(string $templateName, array $templateData = []): Response
     {
         try {
+            foreach ($templateData as $k => $v) {
+                if ($v instanceof Form) {
+                    $templateData['form'] = $v->createView();
+                    unset($templateData[$k]);
+                }
+            }
+
             $content = $this->twig->render($templateName, $templateData);
         }
         catch (Error $e) {
@@ -47,12 +55,13 @@ class Responder
     }
 
     /**
+     * @param string     $templateName
      * @param \Exception $e
      * @return Response
      */
-    public function createTwigErrorResponse(\Exception $e): Response
+    public function createTwigErrorPageResponse(string $templateName, \Exception $e): Response
     {
-        return $this->createTwigResponse('@Error/error.html.twig', ['error' => $e->getMessage()]);
+        return $this->createTwigResponse($templateName, ['error' => $e->getMessage()]);
     }
 
     /**
@@ -63,6 +72,4 @@ class Responder
     {
         return new JsonResponse($data);
     }
-
-    // TODO respondert szétkapni? webappresponder és apiresponder? akkor viszont az abstractactionhandler-t is szét kell szedni, alábontani ketté és azokba külön injektálni a respondert. kell ez? így most átláthatóbb a kód, ade úgy meg joban szét van kapva
 }

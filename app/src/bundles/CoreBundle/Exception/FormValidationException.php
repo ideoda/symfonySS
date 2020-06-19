@@ -53,5 +53,4 @@ class FormValidationException extends \Exception
         return $this->form->getErrors(true);
     }
 
-
 }

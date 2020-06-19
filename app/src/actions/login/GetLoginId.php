@@ -2,7 +2,7 @@
 
 namespace app\actions\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractAction;
 use app\bundles\LoginBundle\Form\LoginForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class GetLoginAction
  * @package app\actions\api\login
  */
-class GetLoginId extends AbstractActionHandler
+class GetLoginId extends AbstractAction
 {
     /**
      * @inheritDoc
@@ -41,8 +41,7 @@ class GetLoginId extends AbstractActionHandler
     }
 
     /**
-     * @param \Exception $e
-     * @return Response
+     * @inheritDoc
      */
     protected function handleError(\Exception $e): Response
     {

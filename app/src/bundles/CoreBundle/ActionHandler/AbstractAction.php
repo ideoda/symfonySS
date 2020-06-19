@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class AbstractActionHandler
+ * Class AbstractAction
  * @package app\bundles\CoreBundle\ActionHandler
  */
-abstract class AbstractActionHandler extends AbstractController
+abstract class AbstractAction extends AbstractController
 {
     /**
      * @var RequestValidator

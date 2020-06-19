@@ -2,7 +2,7 @@
 
 namespace app\actions\api\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
+use app\bundles\CoreBundle\ActionHandler\AbstractAction;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\api\login
  */
-class PostLogin extends AbstractActionHandler
+class PostLogin extends AbstractAction
 {
     /**
      * @var LogiinHandler

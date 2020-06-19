@@ -92,7 +92,11 @@ class CoreRouteLoader extends Loader
         $pathname        = $file->getPathname();
         $folderStructure = preg_replace('/^.*actions\/(.*)\/.*.php$/', '$1', $pathname);
         $folderStructure = explode('/', $folderStructure);
-        $filenameString  = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch)(.*)\.php$/', '$2', $pathname);
+
+        $filenameString = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch)(.*)\.php$/', '$2', $pathname);
+
+        // TODO GetLoginId legyen értelmes route
+        $filenameStringArray = explode(' ', preg_replace("([A-Z])", " $0", $filenameString));
 
         // TODO GetLoginId legyen értelmes route
 
