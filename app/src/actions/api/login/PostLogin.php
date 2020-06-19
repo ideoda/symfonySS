@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\api\login
  */
-class PostLoginAction extends AbstractActionHandler
+class PostLogin extends AbstractActionHandler
 {
     /**
      * @var LogiinHandler

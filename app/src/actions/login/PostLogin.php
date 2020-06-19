@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\login
  */
-class PostLoginAction extends AbstractActionHandler
+class PostLogin extends AbstractActionHandler
 {
     /**
      * @var LogiinHandler
@@ -64,10 +64,7 @@ class PostLoginAction extends AbstractActionHandler
 
         $this->loginHandler->handle($descriptor);
 
-        return $this->responder->createTwigResponse(
-            '@Login/login.form.success.html.twig',
-            []
-        );
+        return $this->responder->createTwigResponse('@Login/login.form.success.html.twig');
     }
 
     /**
@@ -80,7 +77,7 @@ class PostLoginAction extends AbstractActionHandler
             return $this->responder->createTwigResponse(
                 '@Login/login.form.html.twig',
                 [
-                    'errors' => $e->getFormErrors(),
+                    'form' => $e->getForm()->createView(),
                 ]
             );
         }

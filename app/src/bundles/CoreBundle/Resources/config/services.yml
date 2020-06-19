@@ -1,13 +1,15 @@
 services:
     core.route.loader:
-        class: app\bundles\CoreBundle\RouteLoader\RouteLoader
+        class: app\bundles\CoreBundle\RouteLoader\CoreRouteLoader
         arguments:
             - ['GET', 'POST']
             - # // TODO eztenv paraméterekbe áttenni
         tags:
             - { name: routing.loader }
+
     app\bundles\CoreBundle\Responder\Responder:
         autowire: true
+
     json.deserialize.listener.request:
         class: app\bundles\CoreBundle\Listener\JsonRequestDeserializeListener
         tags:

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\RouteCollection;
  * Class CoreRouteLoader
  * @package app\bundles\CoreBundle\RouteLoader
  */
-class RouteLoader extends Loader
+class CoreRouteLoader extends Loader
 {
     // TODO a foldereket sokkal szebbre kell csinálni (kernelRootDir?)
 
@@ -78,9 +78,6 @@ class RouteLoader extends Loader
                 return $method;
             }
         }
-
-        return null;
-
         throw new RouteLoaderException('HTTP method not valid');
     }
 
@@ -93,9 +90,11 @@ class RouteLoader extends Loader
         // TODO ide majd még be kell a parameteres routingot is tenni pl users/32
 
         $pathname        = $file->getPathname();
-        $folderStructure = preg_replace('/^.*actions\/(.*)\/.*Action.php$/', '$1', $pathname);
+        $folderStructure = preg_replace('/^.*actions\/(.*)\/.*.php$/', '$1', $pathname);
         $folderStructure = explode('/', $folderStructure);
-        $filenameString  = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch|)(.*)Action.*$/', '$2', $pathname);
+        $filenameString  = preg_replace('/^.*\/(Get|Post|Put|Delete|Patch)(.*)\.php$/', '$2', $pathname);
+
+        // TODO GetLoginId legyen értelmes route
 
         if (strtolower(end($folderStructure)) === strtolower($filenameString)) {
             array_pop($folderStructure);
@@ -128,7 +127,7 @@ class RouteLoader extends Loader
     protected function getRouteNameFromFile(SplFileInfo $file): string
     {
         $pathname = $file->getPathname();
-        $string   = preg_replace('/^.*actions\/(.*)Action.php$/', '$1', $pathname);
+        $string   = preg_replace('/^.*actions\/(.*).php$/', '$1', $pathname);
 
         return strtolower(implode('_', explode('/', $string)));
     }
@@ -140,7 +139,7 @@ class RouteLoader extends Loader
     {
         $finder = new Finder();
 
-        $finder->files()->in(__DIR__.'/../../../actions/')->name('*Action.php');
+        $finder->files()->in(__DIR__.'/../../../actions/')->name('*.php');
 
         if ($finder->hasResults() === false) {
             throw new RouteLoaderException('No routes found. Checked all "Action" folders in src/*/Actions/*');
