@@ -44,7 +44,6 @@ abstract class AbstractAction extends AbstractController
     public function __invoke(Request $request): Response
     {
         try {
-
             if ($this->getAllowedRoles()) {
                 $this->checkPermissions($this->getAllowedRoles());
             }

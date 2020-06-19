@@ -3,6 +3,7 @@
 namespace app\bundles\LoginBundle\Handler;
 
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 /**
  * Class LoginHandlerI
@@ -15,6 +16,12 @@ class LogiinHandler // TODO valamiért ha LoginHandler a class neve, akkor a fil
      */
     public function handle(LoginDescriptor $descriptor): void
     {
+        $user = $this->userManager->findOneBy(['email' => $descriptor->getEmail()]);
+
+        if($user === null) {
+            throw new UsernameNotFoundException();
+        }
+
         $descriptor->setSuceeded(true);
     }
 }
