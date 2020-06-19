@@ -2,9 +2,12 @@
 
 namespace app\bundles\CoreBundle\Responder;
 
+use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
+use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
+use Twig\Error\Error;
 
 /**
  * Class Responder
@@ -30,22 +33,33 @@ class Responder
      * @param string $templateName
      * @param array  $templateData
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      */
     public function createTwigResponse(string $templateName, array $templateData = []): Response
     {
-        $content = $this->twig->render($templateName, $templateData);
+        try {
+            $content = $this->twig->render($templateName, $templateData);
+        }
+        catch (Error $e) {
+            return new Response($e->getMessage());
+        }
 
         return new Response($content);
+    }
+
+    /**
+     * @param \Exception $e
+     * @return Response
+     */
+    public function createTwigErrorResponse(\Exception $e): Response
+    {
+        return $this->createTwigResponse('@Error/error.html.twig', ['error' => $e->getMessage()]);
     }
 
     /**
      * @param $data
      * @return JsonResponse
      */
-    public function createJsonResponse($data): JsonResponse
+    public function createJsonResponse(array $data): JsonResponse
     {
         return new JsonResponse($data);
     }

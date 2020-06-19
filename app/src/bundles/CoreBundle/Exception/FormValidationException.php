@@ -25,7 +25,7 @@ class FormValidationException extends \Exception
      */
     public function __construct(FormErrorIterator $formErrors, $message = '', $code = 0, Throwable $previous = null)
     {
-        foreach ($this->formErrors as $e) {
+        foreach ($formErrors as $e) {
             $message .= sprintf(' %s %s', $e->getMessage(), implode('', $e->getMessageParameters()));
         }
         $this->message = $message;

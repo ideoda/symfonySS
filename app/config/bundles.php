@@ -14,5 +14,5 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     app\bundles\CoreBundle\CoreBundle::class => ['all' => true],
     app\bundles\LoginBundle\LoginBundle::class => ['all' => true],
-
+    app\bundles\ErrorBundle\ErrorBundle::class => ['all' => true],
 ];

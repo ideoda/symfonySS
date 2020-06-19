@@ -2,9 +2,11 @@
 
 namespace app\bundles\CoreBundle\ActionHandler;
 
+use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
+use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
-use app\bundles\LoginBundle\Handler\Login;
+use app\bundles\LoginBundle\Handler\LoginHandlerI;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,11 +23,6 @@ abstract class AbstractActionHandler extends AbstractController
     protected RequestValidator $requestValidator;
 
     /**
-     * @var Login
-     */
-    protected Login $loginHandler;
-
-    /**
      * @var Responder
      */
     protected Responder $responder;
@@ -33,16 +30,13 @@ abstract class AbstractActionHandler extends AbstractController
     /**
      * PostLoginAction constructor.
      * @param RequestValidator $requestValidator
-     * @param Login            $loginHandler
      * @param Responder        $responder
      */
     public function __construct(
         RequestValidator $requestValidator,
-        Login $loginHandler,
         Responder $responder
     ) {
         $this->requestValidator = $requestValidator;
-        $this->loginHandler     = $loginHandler;
         $this->responder        = $responder;
     }
 
@@ -60,13 +54,13 @@ abstract class AbstractActionHandler extends AbstractController
 
             $this->validateRequest($request);
 
-            $response = $this->handle($request);
+            $descriptor = $this->handle($request);
         }
         catch (\Exception $e) {
-            $response = $this->handleError($e, $request);
+            $descriptor = $this->handleError($e);
         }
 
-        return $response;
+        return $this->createResponse($descriptor);
     }
 
     /**
@@ -76,10 +70,10 @@ abstract class AbstractActionHandler extends AbstractController
     protected function checkPermissions(array $roleNames): void
     {
         // TODO talán egy másik service lesz ez? permissionchecker service?
+        // TODO user load, roles load, compare, throw exception
         if (empty($roleNames)) {
             return;
         }
-        //TODO user load, roles load, compare, throw exception
     }
 
     /**
@@ -94,14 +88,19 @@ abstract class AbstractActionHandler extends AbstractController
 
     /**
      * @param Request $request
-     * @return Response
+     * @return DescriptorInterface
      */
-    abstract protected function handle(Request $request): Response;
+    abstract protected function handle(Request $request): DescriptorInterface;
 
     /**
      * @param \Exception $e
-     * @param Request    $request
+     * @return ErrorDescriptor
+     */
+    abstract protected function handleError(\Exception $e): ErrorDescriptor;
+
+    /**
+     * @param DescriptorInterface $descriptor
      * @return Response
      */
-    abstract protected function handleError(\Exception $e, Request $request): Response;
+    abstract protected function createResponse(DescriptorInterface $descriptor): Response;
 }

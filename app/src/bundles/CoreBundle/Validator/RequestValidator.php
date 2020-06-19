@@ -44,6 +44,10 @@ class RequestValidator implements RequestValidatorInterface
      */
     public function validateForm(string $formClass): void
     {
+        if ($this->getCurrentRequest()->getMethod() === 'GET') {
+            return;
+        }
+
         $form    = $this->formFactory->create($formClass);
         $request = $this->getCurrentRequest();
 

@@ -5,10 +5,10 @@ namespace app\bundles\LoginBundle\Handler;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
 
 /**
- * Class Login
+ * Class LoginHandlerI
  * @package app\bundles\LoginBundle\Handler
  */
-class Login
+class LoginHandlerI
 {
     /**
      * @param LoginDescriptor $descriptor
