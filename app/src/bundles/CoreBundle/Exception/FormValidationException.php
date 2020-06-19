@@ -2,6 +2,7 @@
 
 namespace app\bundles\CoreBundle\Exception;
 
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormErrorIterator;
 use Throwable;
 
@@ -12,26 +13,36 @@ use Throwable;
 class FormValidationException extends \Exception
 {
     /**
-     * @var FormErrorIterator
+     * @var Form
      */
-    protected FormErrorIterator $formErrors;
+    protected Form $form;
 
     /**
      * FormValidationException constructor.
-     * @param FormErrorIterator $formErrors
-     * @param string            $message
-     * @param int               $code
-     * @param Throwable|null    $previous
+     * @param Form           $form
+     * @param string         $message
+     * @param int            $code
+     * @param Throwable|null $previous
      */
-    public function __construct(FormErrorIterator $formErrors, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(Form $form, $message = '', $code = 0, Throwable $previous = null)
     {
+        $this->form = $form;
+
+        $formErrors = $form->getErrors(true);
         foreach ($formErrors as $e) {
             $message .= sprintf(' %s %s', $e->getMessage(), implode('', $e->getMessageParameters()));
         }
         $this->message = $message;
 
         parent::__construct($message, $code, $previous);
-        $this->formErrors = $formErrors;
+    }
+
+    /**
+     * @return Form
+     */
+    public function getForm(): Form
+    {
+        return $this->form;
     }
 
     /**
@@ -39,7 +50,7 @@ class FormValidationException extends \Exception
      */
     public function getFormErrors(): FormErrorIterator
     {
-        return $this->formErrors;
+        return $this->form->getErrors(true);
     }
 
 

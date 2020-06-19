@@ -14,7 +14,7 @@ use Symfony\Component\Routing\RouteCollection;
  * Class CoreRouteLoader
  * @package app\bundles\CoreBundle\RouteLoader
  */
-class CoreRouteLoader extends Loader
+class RouteLoader extends Loader
 {
     // TODO a foldereket sokkal szebbre kell csinálni (kernelRootDir?)
 

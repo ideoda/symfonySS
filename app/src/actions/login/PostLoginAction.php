@@ -2,13 +2,13 @@
 
 namespace app\actions\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractWebActionHandler;
-use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
+use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
 use app\bundles\CoreBundle\Exception\FormValidationException;
-use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
+use app\bundles\CoreBundle\Responder\Responder;
+use app\bundles\CoreBundle\Validator\RequestValidator;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
 use app\bundles\LoginBundle\Form\LoginForm;
-use app\bundles\LoginBundle\Handler\LoginHandlerI;
+use app\bundles\LoginBundle\Handler\LogiinHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,13 +16,27 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\login
  */
-class PostLoginAction extends AbstractWebActionHandler
+class PostLoginAction extends AbstractActionHandler
 {
     /**
-     * @var LoginHandlerI
+     * @var LogiinHandler
      */
-    // TODO valamiért ha LoginHandler a class neve, akkor a file-t nem phpként ismeri fel a PHPstrom ezért tettem I-t a végére
-    protected LoginHandlerI $loginHandler;
+    protected LogiinHandler $loginHandler;
+
+    /**
+     * PostLoginAction constructor.
+     * @param RequestValidator $requestValidator
+     * @param Responder        $responder
+     * @param LogiinHandler    $loginHandler
+     */
+    public function __construct(
+        RequestValidator $requestValidator,
+        Responder $responder,
+        LogiinHandler $loginHandler
+    ) {
+        $this->loginHandler = $loginHandler;
+        parent::__construct($requestValidator, $responder);
+    }
 
     /**
      * @inheritDoc
@@ -36,60 +50,39 @@ class PostLoginAction extends AbstractWebActionHandler
      */
     protected function validateRequest(Request $request): void
     {
-        if ($request->getMethod() === 'POST') {
-            $this->requestValidator->validateForm(LoginForm::class);
-        }
+        $this->requestValidator->validateForm(LoginForm::class);
     }
 
     /**
      * @inheritDoc
      */
-    protected function handle(Request $request): DescriptorInterface
+    protected function handle(Request $request): Response
     {
-        $form = $this->createForm(LoginForm::class);
-
         $descriptor = new LoginDescriptor();
-        $descriptor->setEmail($request->get('email'));
-        $descriptor->setPassword($request->get('password'));
+        $descriptor->setEmail($request->request->all()['login_form']['email']);
+        $descriptor->setPassword($request->request->all()['login_form']['password']);
 
         $this->loginHandler->handle($descriptor);
 
-        return $descriptor;
+        return $this->responder->createTwigResponse(
+            '@Login/login.form.success.html.twig',
+            []
+        );
     }
 
     /**
      * @param \Exception $e
-     * @return ErrorDescriptor
+     * @return Response
      */
-    protected function handleError(\Exception $e): ErrorDescriptor
+    protected function handleError(\Exception $e): Response
     {
-        return new ErrorDescriptor($e);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function createResponse(DescriptorInterface $descriptor): Response
-    {
-        if ($descriptor instanceof ErrorDescriptor) {
-
-            if (($e = $descriptor->getError()) instanceof FormValidationException) {
-
-                return $this->responder->createTwigResponse(
-                    '@Login/login.form.html.twig',
-                    [
-                        'errors' => $e->getMessage(),
-                    ]
-                );
-            }
-
-            return $this->responder->createTwigErrorResponse($e);
+        if ($e instanceof FormValidationException) {
+            return $this->responder->createTwigResponse(
+                '@Login/login.form.html.twig',
+                [
+                    'errors' => $e->getFormErrors(),
+                ]
+            );
         }
-
-        $data = [
-            'succeeded' => $descriptor->isSuceeded(),
-        ];
-
-        return $this->responder->createJsonResponse($data);
     }
 }

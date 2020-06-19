@@ -2,14 +2,12 @@
 
 namespace app\actions\api\login;
 
-use app\bundles\CoreBundle\ActionHandler\AbstractApiActionHandler;
-use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
-use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
+use app\bundles\CoreBundle\ActionHandler\AbstractActionHandler;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
 use app\bundles\LoginBundle\Descriptor\LoginDescriptor;
 use app\bundles\LoginBundle\Form\LoginForm;
-use app\bundles\LoginBundle\Handler\LoginHandlerI;
+use app\bundles\LoginBundle\Handler\LogiinHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,23 +15,23 @@ use Symfony\Component\HttpFoundation\Response;
  * Class PostLoginAction
  * @package app\actions\api\login
  */
-class PostLoginAction extends AbstractApiActionHandler
+class PostLoginAction extends AbstractActionHandler
 {
     /**
-     * @var LoginHandlerI
+     * @var LogiinHandler
      */
-    protected LoginHandlerI $loginHandler;
+    protected LogiinHandler $loginHandler;
 
     /**
      * PostLoginAction constructor.
      * @param RequestValidator $requestValidator
      * @param Responder        $responder
-     * @param LoginHandlerI    $loginHandler
+     * @param LogiinHandler    $loginHandler
      */
     public function __construct(
         RequestValidator $requestValidator,
         Responder $responder,
-        LoginHandlerI $loginHandler
+        LogiinHandler $loginHandler
     ) {
         $this->loginHandler = $loginHandler;
         parent::__construct($requestValidator, $responder);
@@ -57,7 +55,7 @@ class PostLoginAction extends AbstractApiActionHandler
     /**
      * @inheritDoc
      */
-    protected function handle(Request $request): DescriptorInterface
+    protected function handle(Request $request): Response
     {
         $descriptor = new LoginDescriptor();
         $descriptor->setEmail($request->get('email'));
@@ -65,30 +63,20 @@ class PostLoginAction extends AbstractApiActionHandler
 
         $this->loginHandler->handle($descriptor);
 
-        return $descriptor;
+        return $this->responder->createJsonResponse(
+            [
+                'succeeded' => $descriptor->isSuceeded(),
+            ]);
     }
 
     /**
      * @inheritDoc
      */
-    protected function handleError(\Exception $e): ErrorDescriptor
+    protected function handleError(\Exception $e): Response
     {
-        return new ErrorDescriptor($e);
+        return $this->responder->createJsonResponse(
+            [
+                'error' => $e->getMessage(),
+            ]);
     }
-
-    /**
-     * @param DescriptorInterface $descriptor
-     * @return Response
-     */
-    protected function createResponse(DescriptorInterface $descriptor): Response
-    {
-        /** @var LoginDescriptor $descriptor */
-
-        $data = [
-            'succeeded' => $descriptor->isSuceeded()
-        ];
-
-        return $this->responder->createJsonResponse($data);
-    }
-
 }

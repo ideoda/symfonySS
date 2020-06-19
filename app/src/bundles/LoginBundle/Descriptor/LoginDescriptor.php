@@ -2,13 +2,11 @@
 
 namespace app\bundles\LoginBundle\Descriptor;
 
-use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
-
 /**
  * Class LoginDescriptor
  * @package app\bundles\LoginBundle\Descriptor
  */
-class LoginDescriptor implements DescriptorInterface
+class LoginDescriptor
 {
     /**
      * @var string

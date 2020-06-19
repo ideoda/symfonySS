@@ -2,11 +2,8 @@
 
 namespace app\bundles\CoreBundle\ActionHandler;
 
-use app\bundles\CoreBundle\Descriptor\ErrorDescriptor;
-use app\bundles\CoreBundle\Interfaces\DescriptorInterface;
 use app\bundles\CoreBundle\Responder\Responder;
 use app\bundles\CoreBundle\Validator\RequestValidator;
-use app\bundles\LoginBundle\Handler\LoginHandlerI;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,13 +51,13 @@ abstract class AbstractActionHandler extends AbstractController
 
             $this->validateRequest($request);
 
-            $descriptor = $this->handle($request);
+            $response = $this->handle($request);
         }
         catch (\Exception $e) {
-            $descriptor = $this->handleError($e);
+            $response = $this->handleError($e);
         }
 
-        return $this->createResponse($descriptor);
+        return $response;
     }
 
     /**
@@ -88,19 +85,13 @@ abstract class AbstractActionHandler extends AbstractController
 
     /**
      * @param Request $request
-     * @return DescriptorInterface
+     * @return Response
      */
-    abstract protected function handle(Request $request): DescriptorInterface;
+    abstract protected function handle(Request $request): Response;
 
     /**
      * @param \Exception $e
-     * @return ErrorDescriptor
-     */
-    abstract protected function handleError(\Exception $e): ErrorDescriptor;
-
-    /**
-     * @param DescriptorInterface $descriptor
      * @return Response
      */
-    abstract protected function createResponse(DescriptorInterface $descriptor): Response;
+    abstract protected function handleError(\Exception $e): Response;
 }

@@ -1,6 +1,6 @@
 services:
     core.route.loader:
-        class: app\bundles\CoreBundle\RouteLoader\CoreRouteLoader
+        class: app\bundles\CoreBundle\RouteLoader\RouteLoader
         arguments:
             - ['GET', 'POST']
             - # // TODO eztenv paraméterekbe áttenni
@@ -9,6 +9,6 @@ services:
     app\bundles\CoreBundle\Responder\Responder:
         autowire: true
     json.deserialize.listener.request:
-        class: app\bundles\CoreBundle\Listener\JsonDeserializeListener
+        class: app\bundles\CoreBundle\Listener\JsonRequestDeserializeListener
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
