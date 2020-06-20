@@ -72,4 +72,18 @@ class Responder
     {
         return new JsonResponse($data);
     }
+
+    /**
+     * @param \Exception $e
+     * @return JsonResponse
+     */
+    public function createJsonErrorResponse(\Exception $e): JsonResponse
+    {
+        return new JsonResponse(
+            [
+                'errorClass'   => \get_class($e),
+                'errorMessage' => $e->getMessage(),
+                'errorTrace'   => str_replace('#', str_repeat(' ', 160).'#', $e->getTraceAsString()),
+            ]);
+    }
 }

@@ -66,7 +66,8 @@ class PostLogin extends AbstractAction
         return $this->responder->createJsonResponse(
             [
                 'succeeded' => $descriptor->isSuceeded(),
-            ]);
+            ]
+        );
     }
 
     /**
@@ -74,9 +75,6 @@ class PostLogin extends AbstractAction
      */
     protected function handleError(\Exception $e): Response
     {
-        return $this->responder->createJsonResponse(
-            [
-                'error' => $e->getMessage(),
-            ]);
+        return $this->responder->createJsonErrorResponse($e);
     }
 }
